@@ -1,0 +1,32 @@
+nohup: ignoring input
+Blade(warning): Auto upgrade failure: /home/dev/bin/blade: line 82: svn: command not found
+Blade(warning): Please svn up /home/dev/typhoon-blade-master
+Blade(warning): You can setenv BLADE_AUTO_UPGRADE=no to disable auto upgrade
+Blade: Entering directory `/home/dev/kingchess_remote'
+Blade(info): loading BUILDs...
+Blade(info): loading done.
+Blade(info): analyzing dependency graph...
+Blade(info): analyzing done.
+Blade(info): generating build rules...
+Blade(info): CPP=cpp
+Blade(info): CC=gcc
+Blade(info): CXX=g++
+Blade(info): LD=g++
+Blade(info): generating done.
+Blade(info): tunes the parallel jobs number(-j N) to be 8
+scons: Reading SConscript files ...
+Blade(warning): Failed to get version control info in kingchess_c
+Blade(warning): Failed to get version control info in thirdparty
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: building associated VariantDir targets: build64_release
+Updating version information
+scons: done building targets.
+Blade(info): '['/home/dev/kingchess_remote/build64_release/kingchess_c/collect_main']' will be ran
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+E20240419 01:31:28.887235 120186 collect.cpp:131] Current file_name:file_2024-04-19-01-31-28.game
+E20240419 01:31:28.891225 120186 collect.cpp:148] file_2024-04-19-01-31-28.game write.
+E20240419 01:31:28.893054 120186 collect.cpp:195] game state length:135
+E20240419 01:31:28.893079 120186 collect.cpp:201] speed time 2655.12s
+Blade(info): success
+Blade(info): cost time is 0:44:16s

@@ -1,0 +1,62 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-rETMBE
+
+Run Build Command(s):/opt/rh/devtoolset-9/root/usr/bin/gmake -f Makefile cmTC_36681/fast && /opt/rh/devtoolset-9/root/usr/bin/gmake  -f CMakeFiles/cmTC_36681.dir/build.make CMakeFiles/cmTC_36681.dir/build
+gmake[1]: Entering directory '/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-rETMBE'
+Building C object CMakeFiles/cmTC_36681.dir/src.c.o
+/opt/rh/devtoolset-9/root/usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD  -fPIC  -o CMakeFiles/cmTC_36681.dir/src.c.o -c /home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-rETMBE/src.c
+Linking C executable cmTC_36681
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_36681.dir/link.txt --verbose=1
+/opt/rh/devtoolset-9/root/usr/bin/cc -fPIC  CMakeFiles/cmTC_36681.dir/src.c.o -o cmTC_36681 
+/opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: CMakeFiles/cmTC_36681.dir/src.c.o: in function `main':
+src.c:(.text+0x2f): undefined reference to `pthread_create'
+/opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: src.c:(.text+0x3b): undefined reference to `pthread_detach'
+/opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: src.c:(.text+0x47): undefined reference to `pthread_cancel'
+/opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: src.c:(.text+0x58): undefined reference to `pthread_join'
+/opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: src.c:(.text+0x6c): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_36681.dir/build.make:99: cmTC_36681] Error 1
+gmake[1]: Leaving directory '/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-rETMBE'
+gmake: *** [Makefile:127: cmTC_36681/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-3RKu7K
+
+Run Build Command(s):/opt/rh/devtoolset-9/root/usr/bin/gmake -f Makefile cmTC_30f58/fast && /opt/rh/devtoolset-9/root/usr/bin/gmake  -f CMakeFiles/cmTC_30f58.dir/build.make CMakeFiles/cmTC_30f58.dir/build
+gmake[1]: Entering directory '/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-3RKu7K'
+Building C object CMakeFiles/cmTC_30f58.dir/CheckFunctionExists.c.o
+/opt/rh/devtoolset-9/root/usr/bin/cc   -fPIC -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_30f58.dir/CheckFunctionExists.c.o -c /home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-3RKu7K/CheckFunctionExists.c
+Linking C executable cmTC_30f58
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_30f58.dir/link.txt --verbose=1
+/opt/rh/devtoolset-9/root/usr/bin/cc -fPIC -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_30f58.dir/CheckFunctionExists.c.o -o cmTC_30f58  -lpthreads 
+/opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_30f58.dir/build.make:99: cmTC_30f58] Error 1
+gmake[1]: Leaving directory '/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/CMakeScratch/TryCompile-3RKu7K'
+gmake: *** [Makefile:127: cmTC_30f58/fast] Error 2
+
+
+
