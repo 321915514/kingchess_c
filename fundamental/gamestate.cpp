@@ -314,6 +314,8 @@ void GameState::get_legal_moves(const std::vector<coord_t> &coords, std::vector<
 
 
 void GameState::legal_moves(std::vector<Move> &moves) {
+
+    //std::cout<<"legal moves"<<std::endl;
     if (player == BLACK) {
         // is black
         std::vector<coord_t> black_chess;
@@ -323,16 +325,21 @@ void GameState::legal_moves(std::vector<Move> &moves) {
             }
         }
         //
+//	std::cout<<"get legal moves"<<std::endl;
         get_legal_moves(black_chess, moves);
+//	std::cout<<"return moves black"<<std::endl;
         return;
     } else if (player == WHITE) {
         // is white
         if (play_out <= 32) {
+//	    std::cout<<"white down"<<std::endl;
             for (auto coord: Coordinates) {
                 if (Coordinate::Legal_coord(coord) && Coordinate::OnBoard(coord) && board.grid[coord] == 0) {
                     moves.emplace_back(coord);
                 }
             }
+	    
+//	std::cout<<"return moves white down"<<std::endl;
             return;
         } else {
             std::vector<coord_t> white_chess;
@@ -341,7 +348,11 @@ void GameState::legal_moves(std::vector<Move> &moves) {
                     white_chess.push_back(coord);
                 }
             }
-            get_legal_moves(white_chess, moves);
+
+//	std::cout<<"get legal moves white"<<std::endl;
+        get_legal_moves(white_chess, moves);
+	    
+//	std::cout<<"return moves white go"<<std::endl;
             return;
         }
     }

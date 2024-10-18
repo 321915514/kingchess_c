@@ -135,7 +135,7 @@ public:
     //}
 
 
-    void infer(float (&grid)[45*5]){
+    void infer(float (&grid)[45*21]){
 //        for(auto item:grid){
 //            std::cout<<item<<"\t";
 //        }
@@ -175,7 +175,7 @@ public:
     }
 
 
-    std::vector<std::vector<float>> commit(float (&grid)[45*5]) {
+    std::vector<std::vector<float>> commit(float (&grid)[45*21]) {
 //        int32_t grid[81 * 5] = {0};
 //
 //        encoder(game, grid);

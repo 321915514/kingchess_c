@@ -122,7 +122,7 @@ Collect::Collect(const double& c_puct,const int& simulate_num,const int& thread_
 
 //}
 
-void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*5>,std::vector<float>,int>>& play_data,const bool& show){
+void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*21>,std::vector<float>,int>>& play_data,const bool& show){
 
     TripletArray triplet_array;
     // 在此处填充你的 TripletArray 实例数据
@@ -130,7 +130,7 @@ void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*5>,std
     for (auto i=0;i<play_data.size();i++) {
         Triplet triplet = Triplet();
 
-        for (auto j = 0; j < 45*5; j++) {
+        for (auto j = 0; j < 45*21; j++) {
             triplet.add_array(static_cast<int32_t>(std::get<0>(play_data[i])[j]));
         }
 	
@@ -146,6 +146,7 @@ void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*5>,std
             //move.set_prob(item.second);
         //    *triplet.add_dictionary() = move;
        }
+	//LOG(ERROR)<<std::get<2>(play_data[i]);
         triplet.set_value(std::get<2>(play_data[i]));
         *triplet_array.add_triplets() = triplet;
 
@@ -198,7 +199,7 @@ void Collect::self_play(const bool& show) {
    // cudaSetDevice(8);
     //deep_model model(FLAGS_engine_path);
 
-    std::vector<std::array<float,45*5>> states;
+    std::vector<std::array<float,45*21>> states;
     std::vector<std::vector<float>> move_probs;
     std::vector<int> current_players;
 
@@ -208,22 +209,24 @@ void Collect::self_play(const bool& show) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0,1);
+    int count_chess=0;
     for(size_t i=0;i<45;i++){
-    	if(game.board.grid[i]==0 && dis(gen) && Coordinate::OnBoard(i)){
+    	if(game.board.grid[i]==0 && Coordinate::Legal_coord(i) && dis(gen) && count_chess<=16){
 	    game.board.grid[i] = -1;
+	    count_chess++;
 	}
     }
 
-
+    //std::cout<<"add end"<<std::endl;
     std::vector<Move> moves;
 
     //game.legal_moves(moves);
 
     auto mcts = MCTS(&model, thread_num, c_puct, simulate_num, 0.3);
 
-    float grid[45*5]={0};
+    float grid[45*21]={0};
     int winner = 0;
-    std::array<float,45*5> arr{0.0f};
+    std::array<float,45*21> arr{0.0f};
     while (true){
         if(show){
             print_board(game.board);
@@ -235,7 +238,7 @@ void Collect::self_play(const bool& show) {
             game.move.m_point_ = -100;
             //winner = 0;
            // game.is_gameover(winner);
-           // LOG(ERROR)<<"winner:"<<winner;
+            //LOG(ERROR)<<"winner:"<<winner;
         }
         winner = 0;
         game.is_gameover(winner);
@@ -243,8 +246,9 @@ void Collect::self_play(const bool& show) {
         //std::cout<<winner<<std::endl;
         if(winner !=0){
             // 结束
+//	    std::cout<<"winner:"<<winner<<std::endl;
             std::vector<int> winner_z(current_players.size(),0);
-            if(winner != -1){
+            //if(winner != -1){
                 for(size_t i=0;i<current_players.size();i++){
                     if(current_players[i] == winner){
                         winner_z[i] = 1.0;
@@ -252,18 +256,26 @@ void Collect::self_play(const bool& show) {
                         winner_z[i] = -1.0;
                     }
                 }
-            }
+            //}
+
+	    //for(auto i:winner_z){
+	    //	std::cout<<i<<",";
+	    //}
+
            // mcts.update_with_move(-1);
             //
             //auto play_data = get_equi_data(states,move_probs,winner_z);
-            //std::cout<<"get play_data";
-	    std::vector<std::tuple<std::array<float,45*5>,std::vector<float>,int>> play_data;
+  //          std::cout<<"get play_data";
+	    std::vector<std::tuple<std::array<float,45*21>,std::vector<float>,int>> play_data;
 	    for(int i=0;i<states.size();i++){
+		//std::cout<<winner_z[i]<<std::endl;
 	    	play_data.emplace_back(states[i],move_probs[i],winner_z[i]);
 	    }
             write_proto_file(play_data,show);
 
             LOG(ERROR)<<"game state length:"<<states.size();
+	
+	    LOG(ERROR) <<"winner:"<<winner;
 
             auto end = std::chrono::high_resolution_clock::now();
             // 计算时间间隔
@@ -275,7 +287,7 @@ void Collect::self_play(const bool& show) {
         }
 
         auto game_copy = GameState(game);
-        //std::cout<<"run mcts"<<std::endl;
+    //   	std::cout<<"run mcts"<<std::endl;
 
         auto mcts_start = std::chrono::high_resolution_clock::now();
 
@@ -292,7 +304,7 @@ void Collect::self_play(const bool& show) {
 	
 	//}	
 	
-
+//	std::cout<< "mcts end"<<std::endl;
         if(show){
             //LOG(ERROR)<<"game state length:"<<states.size();
 
@@ -331,6 +343,10 @@ void Collect::self_play(const bool& show) {
 
             encoder_data_45(game_encoder,grid);
 
+	    //for(auto i:grid){
+	    //	std::cout<<i<<",";
+	    //}
+	    //std::cout<<std::endl;
             //std::array<float,81*5> arr;
 
             memcpy(arr.data(),grid,sizeof(grid));

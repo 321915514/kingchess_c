@@ -101,7 +101,7 @@ int combineProbabilities(const std::unordered_map<int,double>& actions) {
 
 //    std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> symmetry(std::array<float, 81*5>& state, std::vector<float>& move_prob,const int& current_player);
 
-    void write_proto_file(std::vector<std::tuple<std::array<float,45*5>,std::vector<float>,int>>& play_data,const bool& show);
+    void write_proto_file(std::vector<std::tuple<std::array<float,45*21>,std::vector<float>,int>>& play_data,const bool& show);
 
 };
 

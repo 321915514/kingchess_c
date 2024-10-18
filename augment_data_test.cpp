@@ -7,6 +7,6 @@
 
 
 int main(){
-    Collect collect(1,1200,16);
+    Collect collect(1,2,1);
     collect.self_play(true);
 }

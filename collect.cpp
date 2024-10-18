@@ -207,9 +207,11 @@ void Collect::self_play(const bool& show) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0,1);
+    int count = 0;
     for(size_t i=0;i<45;i++){
-    	if(game.board.grid[i]==0 && dis(gen) && Coordinate::OnBoard(i)){
+    	if(game.board.grid[i]==0 && dis(gen) && Coordinate::Legal_coord(i) && count<=16){
 	    game.board.grid[i] = -1;
+	    count++;
 	}
     }
     std::vector<Move> moves;

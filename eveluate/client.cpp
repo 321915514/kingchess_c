@@ -46,7 +46,7 @@ void handle_client(int client_socket) {
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
-            auto mcts = MCTS(&model, 16, 5, 100, 0.3);
+            auto mcts = MCTS(&model, 1, 5, 2, 0.3);
             auto res = mcts.get_action_probs(&game_copy, false, 1e-3);
             auto it = std::find(res.begin(), res.end(), 1);
             size_t index = std::distance(res.begin(), it);

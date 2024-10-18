@@ -17,7 +17,7 @@ cc_binary(name='collect_main',srcs='collect_main.cpp',deps=[':collect','//kingch
 cc_binary(name='collect_main_45',srcs='collect_main_45.cpp',deps=[':collect_45','//kingchess_c/fundamental:coordinate','//thirdparty/glog:glog','//thirdparty/gflags:gflags'])
 
 
-cc_test(name='augment_data_test',srcs='augment_data_test.cpp',deps=[':collect_45'])
+cc_test(name='augment_data_test',srcs='augment_data_test.cpp',deps=[':collect'])
 
 cc_binary(name='collect_main_muc',srcs='collect_main_muc.cpp',deps=[':collect'])
 

@@ -261,6 +261,12 @@ void MCTS::tree_deleter(TreeNode *t) {
 
 
 std::unordered_map<int, float> softmaxMap(const std::unordered_map<int, float>& inputMap) {
+  
+
+        if (inputMap.empty()) {
+	    return {};
+	}
+
     std::vector<float> values;
     for (const auto& pair : inputMap) {
         values.push_back(pair.second);
@@ -273,13 +279,14 @@ std::unordered_map<int, float> softmaxMap(const std::unordered_map<int, float>& 
     }
 
     std::unordered_map<int, float> resultMap;
-    int index = 0;
+    //int index = 0;
     for (const auto& pair : inputMap) {
-        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp;
-        index++;
+        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp>0?sumExp:1e+10;
+     //   index++;
     }
 
     return resultMap;
+    
 }
 
 
@@ -390,7 +397,7 @@ std::vector<float> MCTS::get_action_probs(GameState *game, const bool &show, dou
 void MCTS::simulate(std::shared_ptr<GameState> game) {
     // execute one simulation
     auto node = this->root.get();
-//  std::cout<< "simulation"<<std::endl;
+    //std::cout<< "simulation"<<std::endl;
 
     //LOG(ERROR)<<node->get_is_leaf();
     int w = 0;
@@ -417,7 +424,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         if (node->get_is_leaf()) {
             break;
         } else if (moves.size() == 0) {
-            //std::cout<<"move size ==0";
+//            std::cout<<"move size ==0";
             game->move.m_point = -100;
             game->move.m_point_ = -100;
             break;
@@ -474,7 +481,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         // predict action_probs and value by neural network
         std::vector<float> action_priors(1125, 0.);
 
-        float grid[45 * 5] = {0};
+        float grid[45 * 21] = {0};
 
         encoder_data_45(game, grid);
 
@@ -556,29 +563,31 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         //}
         //std::cout<<value<<std::endl;
 
-//    std::cout<< value<<std::endl;
+        //std::cout<<"get probs"<<std::endl;
 
         // mask invalid actions
         std::vector<Move> legal_move;
         game->legal_moves(legal_move);
 
+	
+	//std::cout<<"move_size:"<<legal_move.size()<<std::endl;
 
         std::vector<int> actions;
-
+        //std::cout<<"get moves"<<std::endl;
         for (auto move: legal_move) {
             actions.push_back(game->move_2_action(move));
         }
 
         std::unordered_map<int, float> prebs;
-
+	//std::cout<<"add map"<<std::endl;
         for (auto action: actions) {
             prebs[action] = action_priors[action];
         }
 
+	//std::cout<<"pre softmax"<<std::endl;
+       	auto probs = softmaxMap(prebs);
 
-        prebs = softmaxMap(prebs);
-
-
+	//std::cout<<"end softmax"<<std::endl;
 
 //    action_priors.resize(legal_move.size());
 
@@ -624,7 +633,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
 	//    std::cout<<"action:"<<item.first<<"pro:"<<item.second<<std::endl;
 	//}
 
-        node->expand(prebs, node_num);
+        node->expand(probs, node_num);
         //LOG(ERROR)<<"expand run end";
 
 

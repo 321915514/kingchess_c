@@ -139,10 +139,16 @@ void encoder_data(std::shared_ptr<GameState> game, float (&grid)[81*5]){
             grid[(81 * 4) + game->eat_point] = 1;
         }
     }
+//    if(game->play_out<33){
+//    	int layer =  (game->play_out)/2;
+//    	for(size_t i=0;i<SQUARE;i++){
+//    	   grid[(81*5+81*layer)+i] = 1; 
+//    	}
+//    }
 }
 
 
-void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*5]){
+void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*21]){
     for(size_t i=0;i<SQUARE;i++){
         if(game->board.grid[i] == 1){
             grid[i] = 1;
@@ -163,6 +169,12 @@ void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*5]){
         if(game->eat_point != -1) {
             grid[(45 * 4) + game->eat_point] = 1;
         }
+    }
+    if(game->play_out<33){
+    	int layer =  (game->play_out-1)/2;
+    	for(size_t i=0;i<SQUARE;i++){
+    	   grid[(45*5+45*layer)+i] = 1; 
+    	}
     }
 }
 
