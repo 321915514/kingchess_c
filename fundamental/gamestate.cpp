@@ -492,11 +492,11 @@ void GameState::is_gameover(int &winner) {
         winner = BLACK;
     } else if (play_out > 300) {
         // legal_moves(moves);
-        if (moves.size() == 1) {
-            winner = WHITE;
-        } else {
-            winner = BLACK;
-        }
+	//if (moves.size() == 1) {
+        //    winner = WHITE;
+        //} else {
+         winner = BLACK;
+        //}
     } else {
         winner = 0;
     }

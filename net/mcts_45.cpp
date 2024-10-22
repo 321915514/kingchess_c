@@ -481,7 +481,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         // predict action_probs and value by neural network
         std::vector<float> action_priors(1125, 0.);
 
-        float grid[45 * 21] = {0};
+        float grid[45 * 32] = {0};
 
         encoder_data_45(game, grid);
 

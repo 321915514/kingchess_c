@@ -42,7 +42,7 @@ void handle_client(int client_socket) {
             game.player = json_data["player"];
             game.play_out = json_data["play_out"];
             // 构建deepmodel
-            deep_model model("/home/test4/new_kingchess/net/model/current.engine");
+            deep_model model("/kingchess_remote/new_kingchess/net/model/current.engine");
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
@@ -83,7 +83,7 @@ int main() {
     // 设置服务器地址结构
     sockaddr_in server_address;
     server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(8888); // 监听端口
+    server_address.sin_port = htons(6006); // 监听端口
     server_address.sin_addr.s_addr = INADDR_ANY; // 监听所有地址
 
     // 绑定服务器套接字到地址
@@ -98,7 +98,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "Server listening on port 8888" << std::endl;
+    std::cout << "Server listening on port 6006" << std::endl;
 
     // 主循环，持续监听客户端连接
     while (true) {
