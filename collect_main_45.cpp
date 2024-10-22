@@ -25,7 +25,7 @@ int main(int argc,char** argv){
         
         Collect collect(5,300,16); // prar 0 is c_puct,para 1 is sumulate, para2 is thread;
 	//LOG(ERROR)<<"start self play";
-        collect.self_play(false);
+        collect.self_play(true);
         //LOG(ERROR)<<"end self play";
     }
     google::ShutDownCommandLineFlags();

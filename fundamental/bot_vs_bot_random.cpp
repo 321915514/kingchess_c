@@ -87,7 +87,7 @@ void run(){
 int main(){
 
     auto start = std::chrono::high_resolution_clock::now();
-    for(int16_t i =0;i<10000;i++){
+    for(int16_t i =0;i<1;i++){
 ////        simple();
        run();
     }
