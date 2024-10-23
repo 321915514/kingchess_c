@@ -211,7 +211,7 @@ void Collect::self_play(const bool& show) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0,1);
-    if(dis(gen)){
+    if(dis(gen)<0.5){
 	//int count_chess=0;
    	//for(size_t i=0;i<45;i++){
     	 //    if(game.board.grid[i]==0 && Coordinate::Legal_coord(i) && dis(gen) && count_chess<=16){
@@ -247,7 +247,13 @@ void Collect::self_play(const bool& show) {
 	       } 
 	    }
 	}
-    
+     if(dis(gen)<0.2){
+     	if(dis(gen)<0.5){
+	    game.board.grid[20] = 0;
+	}else{
+	    game.board.grid[24] = 0;
+	}
+     } 
 
     //std::cout<<"add end"<<std::endl;
     std::vector<Move> moves;
