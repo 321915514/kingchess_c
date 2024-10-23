@@ -484,9 +484,9 @@ void GameState::one_king_legal_move(const coord_t &coord, std::vector<Move> &mov
 void GameState::is_gameover(int &winner) {
     //    print_move(move);
     //    std::cout<<eat_chess()<<std::endl;
-    std::vector<Move> moves;
-    legal_moves(moves);
-    if(moves.size() ==0) {
+    std::vector<Move> m;
+    legal_moves(m);
+    if(m.size() ==0) {
         winner = WHITE;
         return;
     }
