@@ -64,6 +64,17 @@ cc_library(name='mcts_45',srcs='mcts_45.cpp',deps=[':deep_model_45',"#pthread",'
           )
 
 
+
+
+cc_library(name='mcts_45_expert',srcs='mcts_45_expert.cpp',deps=[':deep_model_45',"#pthread",'//kingchess_c/fundamental:gamestate','//kingchess_c/fundamental:expert','//kingchess_c/fundamental:utils','//thirdparty/gflags:gflags','//thirdparty/glog:glog'],
+          # hdrs=['mcts.h','threadpool.h']
+          )
+
+
+
+
+
+
 cc_library(name='mcts_pure',srcs='mcts_pure.cpp',deps=['#pthread','//kingchess_c/fundamental:agent' ,'//kingchess_c/fundamental:gamestate','//kingchess_c/fundamental:utils'])
 
 cc_test(name='mcts_test',srcs='mcts_test.cpp',deps=[':deep_model_45',':mcts_45','//kingchess_c/fundamental:utils'])

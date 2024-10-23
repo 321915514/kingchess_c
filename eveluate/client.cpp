@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "json.hpp"
 #include "kingchess_c/fundamental/gamestate.h"
-#include "kingchess_c/net/mcts_45.h"
+#include "kingchess_c/net/mcts_45_expert.h"
 //#include "kingchess_c/fundamental/expert.h"
 #include "kingchess_c/net/deep_model_45.h"
 
@@ -46,8 +46,11 @@ void handle_client(int client_socket) {
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
-            auto mcts = MCTS(&model, 1, 64, 1200, 0.3);
+            auto mcts = MCTS(&model, 1, 16, 500, 0.3);
             auto res = mcts.get_action_probs(&game_copy, false, 1e-3);
+	    //for(auto i:res){
+	    //	std::cout<<i<<",";
+	    //}
             auto it = std::find(res.begin(), res.end(), 1);
             size_t index = std::distance(res.begin(), it);
 	    
