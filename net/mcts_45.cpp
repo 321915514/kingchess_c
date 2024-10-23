@@ -12,7 +12,7 @@
 #include "kingchess_c/fundamental/utils.h"
 #include "kingchess_c/fundamental/move.h"
 #include "kingchess_c/net/deep_model_45.h"
-
+#include "kingchess_c/fundamental/expert.h"
 // TreeNode
 TreeNode::TreeNode()
         : parent(nullptr),
@@ -128,6 +128,10 @@ void TreeNode::expand(const std::unordered_map<int, float> &action_priors, unsig
                 //    break;
                 //  }
                 //}else{
+		//
+		//
+		
+		// add expert score to expand	
                 this->children[pair.first] = new TreeNode(this, pair.second);
                 //}
             }
@@ -481,7 +485,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         // predict action_probs and value by neural network
         std::vector<float> action_priors(1125, 0.);
 
-        float grid[45 * 21] = {0};
+        float grid[45 * 32] = {0};
 
         encoder_data_45(game, grid);
 

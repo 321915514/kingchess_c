@@ -148,7 +148,7 @@ void encoder_data(std::shared_ptr<GameState> game, float (&grid)[81*5]){
 }
 
 
-void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*21]){
+void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*32]){
     for(size_t i=0;i<SQUARE;i++){
         if(game->board.grid[i] == 1){
             grid[i] = 1;
@@ -160,22 +160,33 @@ void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*21]){
             grid[j] = game->player==BLACK?1:-1;
         }
 
-        if(Move::is_down(game->move)){
-            grid[game->move.m_point+(45*3)] = 1;
-        }else if(Move::is_go(game->move)){
-            grid[game->move.m_point+(45*3)] = -1;
-            grid[game->move.m_point_+(45*3)] = 1;
-        }
-        if(game->eat_point != -1) {
-            grid[(45 * 4) + game->eat_point] = 1;
-        }
+	//if(Move::is_down(game->move)){
+        //    grid[game->move.m_point+(45*3)] = 1;
+        //}else if(Move::is_go(game->move)){
+        //    grid[game->move.m_point+(45*3)] = -1;
+        //    grid[game->move.m_point_+(45*3)] = 1;
+        //}
+       // if(game->eat_point != -1) {
+       //     grid[(45 * 4) + game->eat_point] = 1;
+       // }
     }
     if(game->play_out<33){
-    	int layer =  (game->play_out-1)/2;
+    	int layer =  (game->play_out)/2;
     	for(size_t i=0;i<SQUARE;i++){
-    	   grid[(45*5+45*layer)+i] = 1; 
+    	   grid[(45*3+45*layer)+i] = 1; 
     	}
     }
+
+    for(size_t i=0;i<SQUARE;i++){
+    	 grid[(45*20+45*(game->eat_chess()))+i] = 1; 
+    }
+
+
+
+
+
+
+
 }
 
 

@@ -59,7 +59,7 @@ cc_library(name='mcts',srcs='mcts.cpp',deps=[':deep_model',"#pthread",'//kingche
           ),
 
 
-cc_library(name='mcts_45',srcs='mcts_45.cpp',deps=[':deep_model_45',"#pthread",'//kingchess_c/fundamental:gamestate','//kingchess_c/fundamental:utils','//thirdparty/gflags:gflags','//thirdparty/glog:glog'],
+cc_library(name='mcts_45',srcs='mcts_45.cpp',deps=[':deep_model_45',"#pthread",'//kingchess_c/fundamental:gamestate','//kingchess_c/fundamental:expert','//kingchess_c/fundamental:utils','//thirdparty/gflags:gflags','//thirdparty/glog:glog'],
           # hdrs=['mcts.h','threadpool.h']
           )
 

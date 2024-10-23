@@ -16,6 +16,6 @@ void print_move(const Move& move);
 void print_board(const Board& board);
 coord_t get_random_index(size_t max);
 void encoder_data(std::shared_ptr<GameState> game, float (&grid)[81*5]);
-void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*21]);
+void encoder_data_45(std::shared_ptr<GameState> game, float (&grid)[45*32]);
 void encoder_board(std::shared_ptr<GameState> game, float (&grid)[81]);
 #endif //TIC_MCTS_UTILS_H

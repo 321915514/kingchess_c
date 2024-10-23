@@ -56,9 +56,14 @@ void run(){
         game.is_gameover(winner);
         if(winner == -1) {
 //            std::cout << "white win !!" << std::endl;
+            std::cout<<game.moves.size()<<std::endl;
+            std::cout<<game.play_out<<std::endl;
             break;
         }else if(winner == 1) {
 //            std::cout << "black win !!" << std::endl;
+	     
+            std::cout<<game.moves.size()<<std::endl;
+            std::cout<<game.play_out<<std::endl;
             break;
         }
         Move move;
@@ -87,7 +92,7 @@ void run(){
 int main(){
 
     auto start = std::chrono::high_resolution_clock::now();
-    for(int16_t i =0;i<1;i++){
+    for(int16_t i =0;i<100;i++){
 ////        simple();
        run();
     }

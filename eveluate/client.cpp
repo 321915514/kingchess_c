@@ -42,11 +42,11 @@ void handle_client(int client_socket) {
             game.player = json_data["player"];
             game.play_out = json_data["play_out"];
             // 构建deepmodel
-            deep_model model("/home/test4/new_kingchess/net/model/current.engine");
+            deep_model model("/home/test4/new_kingchess/net/model/autodl-resnet5/36000.engine");
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
-            auto mcts = MCTS(&model, 1, 5, 2, 0.3);
+            auto mcts = MCTS(&model, 1, 64, 1200, 0.3);
             auto res = mcts.get_action_probs(&game_copy, false, 1e-3);
             auto it = std::find(res.begin(), res.end(), 1);
             size_t index = std::distance(res.begin(), it);
@@ -98,7 +98,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "Server listening on port 8888" << std::endl;
+    std::cout << "Server listening on port 6006" << std::endl;
 
     // 主循环，持续监听客户端连接
     while (true) {

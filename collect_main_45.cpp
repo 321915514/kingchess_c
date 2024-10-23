@@ -23,9 +23,9 @@ int main(int argc,char** argv){
     while(true){
         //Collect collect(1,FLAGS_simulate,FLAGS_thread); // prar 0 is temp,para 1 is sumulate, para2 is thread;
         
-        Collect collect(5,300,16); // prar 0 is c_puct,para 1 is sumulate, para2 is thread;
+        Collect collect(5,300,128); // prar 0 is c_puct,para 1 is sumulate, para2 is thread;
 	//LOG(ERROR)<<"start self play";
-        collect.self_play(true);
+        collect.self_play(false);
         //LOG(ERROR)<<"end self play";
     }
     google::ShutDownCommandLineFlags();

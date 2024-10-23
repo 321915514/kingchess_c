@@ -55,9 +55,13 @@ void GameState::apply_move(const Move &move, GameState &newgame) const {
     Board next_board = board;
     if (Move::is_down(move)) {
         next_board.stone_down(move.m_point, player);
+	//std::cout<<"moves:"<<newgame.moves.size()<<std::endl;
         newgame.eat_point = -1;
+	newgame.moves.push_back(move);
     } else if (Move::is_go(move)) {
         coord_t stone = next_board.stone_go(move.m_point, move.m_point_, player);
+	//std::cout<<"moves:"<<newgame.moves.size()<<std::endl;
+	newgame.moves.push_back(move);
         if (stone != -1) {
             newgame.eat_point = stone;
         } else {
@@ -486,17 +490,25 @@ void GameState::is_gameover(int &winner) {
         winner = WHITE;
         return;
     }
+    auto move_len = moves.size();
+    if(move_len > 32 && move_len % 2 == 0 && moves.back() == moves[move_len]){
+        winner = BLACK;
+	return;
+    }
     if (move.m_point == -100 && move.m_point_ == -100) {
         winner = WHITE;
+	return;
     } else if (eat_chess() >= 11) {
         winner = BLACK;
+	return;
     } else if (play_out > 300) {
         // legal_moves(moves);
-        if (moves.size() == 1) {
-            winner = WHITE;
-        } else {
-            winner = BLACK;
-        }
+	//if (moves.size() == 1) {
+        //    winner = WHITE;
+        //} else {
+         winner = DRAW;
+	 return;
+        //}
     } else {
         winner = 0;
     }

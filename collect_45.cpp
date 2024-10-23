@@ -18,6 +18,8 @@ DEFINE_string(game_save_dir_test,"/home/test4/new_kingchess/kingchess_c/net/data
 
 DEFINE_string(engine_path,"/home/test4/new_kingchess/net/ldconv_model/current.engine","TensorRT engine file path");
 
+//DEFINE_string(engine_path,"/kingchess_remote/new_kingchess/net/model/current.engine","TensorRT engine file path");
+
     //std::string filename1 = "/home/test4/kingchess_remote/kingchess/net/dataset/"+file;
 
 
@@ -122,7 +124,7 @@ Collect::Collect(const double& c_puct,const int& simulate_num,const int& thread_
 
 //}
 
-void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*21>,std::vector<float>,int>>& play_data,const bool& show){
+void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*32>,std::vector<float>,int>>& play_data,const bool& show){
 
     TripletArray triplet_array;
     // 在此处填充你的 TripletArray 实例数据
@@ -130,7 +132,7 @@ void Collect::write_proto_file(std::vector<std::tuple<std::array<float,45*21>,st
     for (auto i=0;i<play_data.size();i++) {
         Triplet triplet = Triplet();
 
-        for (auto j = 0; j < 45*21; j++) {
+        for (auto j = 0; j < 45*32; j++) {
             triplet.add_array(static_cast<int32_t>(std::get<0>(play_data[i])[j]));
         }
 	
@@ -199,7 +201,7 @@ void Collect::self_play(const bool& show) {
    // cudaSetDevice(8);
     //deep_model model(FLAGS_engine_path);
 
-    std::vector<std::array<float,45*21>> states;
+    std::vector<std::array<float,45*32>> states;
     std::vector<std::vector<float>> move_probs;
     std::vector<int> current_players;
 
@@ -209,13 +211,43 @@ void Collect::self_play(const bool& show) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0,1);
-    int count_chess=0;
-    for(size_t i=0;i<45;i++){
-    	if(game.board.grid[i]==0 && Coordinate::Legal_coord(i) && dis(gen) && count_chess<=16){
-	    game.board.grid[i] = -1;
-	    count_chess++;
+    if(dis(gen)){
+	//int count_chess=0;
+   	//for(size_t i=0;i<45;i++){
+    	 //    if(game.board.grid[i]==0 && Coordinate::Legal_coord(i) && dis(gen) && count_chess<=16){
+	 //   	     game.board.grid[i] = -1;
+	  // 	     count_chess++;
+	//	}
+	 // }
+	 //
+	 //
+	int emptyCount = 37;
+    	int count_chess = 0;
+        int targetCount = rand() % 7 + 10;
+
+	std::vector<int> possibleIndices;
+	for (int i = 0; i < 45; ++i) {
+		if (game.board.grid[i] == 0 && Coordinate::Legal_coord(i)) {
+		    possibleIndices.push_back(i);
+		}
 	}
-    }
+	while (count_chess < targetCount) {
+	    int randomIndex = rand() % possibleIndices.size();
+	    int indexToModify = possibleIndices[randomIndex];
+	    game.board.grid[indexToModify] = -1;
+	    possibleIndices.erase(possibleIndices.begin() + randomIndex);
+	    count_chess++;
+	    }
+	}else{
+	    int less_chess = 8;
+	    for(size_t i=0;i<45;i++){
+	       if(game.board.grid[i]== -1 && dis(gen) && less_chess>=3){
+	             game.board.grid[i] = 0;
+	   	     less_chess--;
+	       } 
+	    }
+	}
+    
 
     //std::cout<<"add end"<<std::endl;
     std::vector<Move> moves;
@@ -224,9 +256,9 @@ void Collect::self_play(const bool& show) {
 
     auto mcts = MCTS(&model, thread_num, c_puct, simulate_num, 0.3);
 
-    float grid[45*21]={0};
+    float grid[45*32]={0};
     int winner = 0;
-    std::array<float,45*21> arr{0.0f};
+    std::array<float,45*32> arr{0.0f};
     while (true){
         if(show){
             print_board(game.board);
@@ -266,7 +298,7 @@ void Collect::self_play(const bool& show) {
             //
             //auto play_data = get_equi_data(states,move_probs,winner_z);
   //          std::cout<<"get play_data";
-	    std::vector<std::tuple<std::array<float,45*21>,std::vector<float>,int>> play_data;
+	    std::vector<std::tuple<std::array<float,45*32>,std::vector<float>,int>> play_data;
 	    for(int i=0;i<states.size();i++){
 		//std::cout<<winner_z[i]<<std::endl;
 	    	play_data.emplace_back(states[i],move_probs[i],winner_z[i]);

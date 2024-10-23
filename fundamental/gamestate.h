@@ -17,7 +17,7 @@ public:
     int32_t play_out;
     coord_t eat_point;
 //    std::map<coord_t,std::vector<coord_t>> jump_dict;
-
+    std::vector<Move> moves;
     ~GameState(){
 //        jump_dict.clear();
 //
@@ -29,20 +29,21 @@ public:
         move = Move();
         play_out = 0;
         eat_point = -1;
+	moves = {};
 //        status = Status::stage1;
 //        jump_dict = {};
     };
 
-    GameState(const Board& board, const int16_t &player, const Move& move,const coord_t& eat_point) : board(board), player(player), move(move),eat_point(eat_point) {}
+    GameState(const Board& board, const int16_t &player, const Move& move,const coord_t& eat_point,const std::vector<Move>& moves) : board(board), player(player), move(move),eat_point(eat_point),moves(moves) {}
 
-    GameState(const Board& board, const int16_t &player, const Move& move, const int32_t & play_out,const coord_t& eat_point) : board(board), player(player), move(move), play_out(play_out), eat_point(eat_point) {}
+    GameState(const Board& board, const int16_t &player, const Move& move, const int32_t & play_out,const coord_t& eat_point,const std::vector<Move> moves) : board(board), player(player), move(move), play_out(play_out), eat_point(eat_point),moves(moves) {}
 
 
 //    GameState() = default;
 
     // 拷贝构造函数
 
-    GameState(const GameState &other_game_state) : board(other_game_state.board), player(other_game_state.player), move(other_game_state.move),play_out(other_game_state.play_out),eat_point(other_game_state.eat_point) {}
+    GameState(const GameState &other_game_state) : board(other_game_state.board), player(other_game_state.player), move(other_game_state.move),play_out(other_game_state.play_out),eat_point(other_game_state.eat_point), moves(other_game_state.moves) {}
 
 
 
@@ -59,6 +60,7 @@ public:
         move = other_game.move;
         play_out = other_game.play_out;
         eat_point = other_game.eat_point;
+	moves = other_game.moves;
 //        jump_dict = other_game.jump_dict;
         return *this;
     }
@@ -69,6 +71,7 @@ public:
         game.move = Move();
         game.play_out = 0;
         game.eat_point = -1;
+	game.moves = {};
 //        game.jump_dict = {};
     }
 
