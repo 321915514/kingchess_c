@@ -72,6 +72,9 @@ void GameState::apply_move(const Move &move, GameState &newgame) const {
     newgame.player = -player;
     newgame.play_out++;
     newgame.move = move;
+    newgame.moves = moves;
+    //std::cout<<newgame.moves.size()<<std::endl;
+
 }
 
 coord_t GameState::eat_chess() const {
@@ -491,7 +494,7 @@ void GameState::is_gameover(int &winner) {
         return;
     }
     auto move_len = moves.size();
-    if(move_len > 32 && move_len % 2 == 0 && moves.back() == moves[move_len]){
+    if(move_len > 32 && move_len % 2 == 0 && moves.back() == moves[move_len-5]){
         winner = BLACK;
 	return;
     }

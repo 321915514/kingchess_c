@@ -3,7 +3,7 @@
 #include <float.h>
 #include <numeric>
 #include <iostream>
-#include "mcts.h"
+#include "mcts_45_expert.h"
 #include <cassert>
 #include "thirdparty/gflags/gflags.h"
 #include "thirdparty/glog/logging.h"
@@ -11,8 +11,8 @@
 #include "kingchess_c/fundamental/gamestate.h"
 #include "kingchess_c/fundamental/utils.h"
 #include "kingchess_c/fundamental/move.h"
-#include "kingchess_c/net/deep_model.h"
-
+#include "kingchess_c/net/deep_model_45.h"
+#include "kingchess_c/fundamental/alpha_beta.h"
 // TreeNode
 TreeNode::TreeNode()
         : parent(nullptr),
@@ -97,7 +97,7 @@ unsigned int TreeNode::select(std::shared_ptr<GameState> game, double c_puct, do
     return best_move;
 }
 
-void TreeNode::expand(const std::unordered_map<int, float> &action_priors, unsigned int &node_num) {
+void TreeNode::expand(std::unordered_map<int, float> &action_priors, unsigned int &node_num, std::shared_ptr<GameState> game) {
     {
         // get lock
         std::lock_guard<std::mutex> lock(this->lock);
@@ -105,7 +105,25 @@ void TreeNode::expand(const std::unordered_map<int, float> &action_priors, unsig
         if (this->is_leaf) {
             //unsigned int action_size = this->children.size();
 
-            for (auto pair: action_priors) {
+		std::vector<int> top_moves;
+		Alpha_beta alpha;
+		auto scores =  alpha.score_moves(*game,3);
+    		for(auto m:scores) {
+        	    if(m.second>10) {
+                        top_moves.push_back(m.first);
+                    }
+                }
+               if(!top_moves.size()) {
+                    for(auto m:scores) {
+                        if(m.second>=0) {
+                           top_moves.push_back(m.first);
+                        }
+                    }
+                }
+
+	       //std::cout<<top_moves.size()<<std::endl;
+		
+            //for (auto pair: action_priors) {
                 // illegal action
                 //if (abs(action_priors[i] - 0) < FLT_EPSILON) {
                 // continue;
@@ -119,7 +137,7 @@ void TreeNode::expand(const std::unordered_map<int, float> &action_priors, unsig
 
                 //LOG(ERROR)<<"node num:"<<node_num;
                 // if(node_num<300){
-                //  this->children.push_back(new TreeNode(this, action_priors[i]));
+                // this->children.push_back(new TreeNode(this, action_priors[i]));
                 //LOG(ERROR)<<"children:"<<this->children.size();
                 //   node_num++;
                 // }else{
@@ -128,9 +146,21 @@ void TreeNode::expand(const std::unordered_map<int, float> &action_priors, unsig
                 //    break;
                 //  }
                 //}else{
-                this->children[pair.first] = new TreeNode(this, pair.second);
-                //}
-            }
+		//
+		
+	      	//for(auto item:action_priors){
+		//    std::cout<<item.second<<"\t";
+		//}
+		for(auto it:top_moves){
+            	    this->children[it] = new TreeNode(this, action_priors[it]);
+		}
+		// add expert score to expand
+	        //for(auto move:top_moves){	
+		//    auto action = game->move_2_action(move);	
+                //    this->children[action] = new TreeNode(this, action_priors[action]);
+		//}
+              //  }
+            //}
             //LOG(ERROR)<<"end loop";
             // not leaf
             //if(this->children.size()>0){
@@ -179,7 +209,7 @@ void TreeNode::backup(double value) {
         this->q_sa = (n_visited * this->q_sa + value) / (n_visited + 1);
     }
     n_visited++;
-   // std::cout<<"visit:"<<n_visited;
+    //std::cout<<"visit:"<<n_visited;
 
 
     //LOG(ERROR)<<"backup end";
@@ -259,6 +289,44 @@ void MCTS::tree_deleter(TreeNode *t) {
     delete t;
 }
 
+
+std::unordered_map<int, float> softmaxMap(const std::unordered_map<int, float>& inputMap) {
+  
+    if (inputMap.empty()) {
+         return {};
+    }
+
+    std::vector<float> values;
+    for (const auto& pair : inputMap) {
+        values.push_back(pair.second);
+    }
+
+    float maxValue = *std::max_element(values.begin(), values.end());
+    float sumExp = 0.0;
+    for (float value : values) {
+        sumExp += std::exp(value - maxValue);
+    }
+
+    std::unordered_map<int, float> resultMap;
+    //int index = 0;
+    for (const auto& pair : inputMap) {
+        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp;
+     //   index++;
+    }
+   
+   //for(auto it:resultMap){
+   //	std::cout<<it.second<<std::endl;
+   //}
+
+
+    return resultMap;
+    
+}
+
+
+
+
+
 std::vector<float> MCTS::get_action_probs(GameState *game, const bool &show, double temp) {
     // submit simulate tasks to thread_pool
     std::vector<std::future<void>> futures;
@@ -319,6 +387,8 @@ std::vector<float> MCTS::get_action_probs(GameState *game, const bool &show, dou
         unsigned int max_count = 0;
         unsigned int best_action = 0;
 
+	std::cout<<children.size()<<std::endl;
+
         for (auto child: children) {
             if (child.second->n_visited.load() > max_count) {
                 max_count = child.second->n_visited.load();
@@ -336,13 +406,10 @@ std::vector<float> MCTS::get_action_probs(GameState *game, const bool &show, dou
         double sum = 0;
 
         //std::cout<<children.size()<<std::endl;
-	
-	int child_visited = 0;
 
         for (auto child: children) {
             if (show) {
-		child_visited+=child.second->n_visited.load();
-                LOG(ERROR) <<"move:"<<Move::move2str(game->action_2_move(child.first))<< " child visit:" << child.second->n_visited.load() << "\n";
+                std::cout <<"move:"<<Move::move2str(game->action_2_move(child.first))<< " child visit:" << child.second->n_visited.load() << "\n";
             }
             if (child.second->n_visited.load() > 0) {
                 //std::cout<<children[i]->n_visited.load()<<std::endl;
@@ -353,11 +420,8 @@ std::vector<float> MCTS::get_action_probs(GameState *game, const bool &show, dou
                 sum += action_probs[child.first];
             }
         }
-	if(show){
-	    LOG(ERROR)<<"sum visited:"<<child_visited;
-	}
         //std::cout<<std::endl;
-        // std::cout<<sum<<std::endl;
+        //std::cout<<sum<<std::endl;
         // renormalization
         std::for_each(action_probs.begin(), action_probs.end(),
                       [sum](float &x) { x /= sum; });
@@ -366,46 +430,10 @@ std::vector<float> MCTS::get_action_probs(GameState *game, const bool &show, dou
     }
 }
 
-
-
-std::unordered_map<int, float> softmaxMap(const std::unordered_map<int, float>& inputMap) {
-  
-
-        if (inputMap.empty()) {
-	    return {};
-	}
-
-    std::vector<float> values;
-    for (const auto& pair : inputMap) {
-        values.push_back(pair.second);
-    }
-
-    float maxValue = *std::max_element(values.begin(), values.end());
-    float sumExp = 0.0;
-    for (float value : values) {
-        sumExp += std::exp(value - maxValue);
-    }
-
-    std::unordered_map<int, float> resultMap;
-    //int index = 0;
-    for (const auto& pair : inputMap) {
-        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp;
-     //   index++;
-    }
-
-    return resultMap;
-    
-}
-
-
-
-
-
-
 void MCTS::simulate(std::shared_ptr<GameState> game) {
     // execute one simulation
     auto node = this->root.get();
-//  std::cout<< "simulation"<<std::endl;
+    //std::cout<< "simulation"<<std::endl;
 
     //LOG(ERROR)<<node->get_is_leaf();
     int w = 0;
@@ -432,7 +460,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         if (node->get_is_leaf()) {
             break;
         } else if (moves.size() == 0) {
-            //std::cout<<"move size ==0";
+//            std::cout<<"move size ==0";
             game->move.m_point = -100;
             game->move.m_point_ = -100;
             break;
@@ -489,9 +517,9 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         // predict action_probs and value by neural network
         std::vector<float> action_priors(1125, 0.);
 
-        float grid[81 * 32] = {0};
+        float grid[45 * 32] = {0};
 
-        encoder_data(game, grid);
+        encoder_data_45(game, grid);
 
         //for(auto i:grid){
         //    std::cout<<i<<"\t";
@@ -571,7 +599,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         //}
         //std::cout<<value<<std::endl;
 
-//    std::cout<< value<<std::endl;
+        //std::cout<<"get probs"<<std::endl;
 
         // mask invalid actions
         std::vector<Move> legal_move;
@@ -596,6 +624,14 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
        	auto probs = softmaxMap(prebs);
 
 
+
+	//for(auto it:probs){
+	//    std::cout<<it.second<<"\t";	
+	//}
+
+
+	//std::cout<<"end softmax"<<std::endl;
+
 //    action_priors.resize(legal_move.size());
 
 
@@ -613,34 +649,23 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
         //std::cout<<std::endl;
 
 
-//        double sum = 0;
-//        for (auto pair: prebs) {
-//            sum += pair.second;
-//        }
-        //std::cout<<sum<<std::endl;
+        // double sum = 0;
+        // for (auto pair: prebs) {
+        //     sum += pair.second;
+        // }
+        // //std::cout<<sum<<std::endl;
 
-        // renormalization
-//        if (sum > FLT_EPSILON) {
-//            for (auto &pair: prebs) {
-//                pair.second /= sum;
-//            }
-//        } else {
-
-            //std::cout<< "run else"<<std::endl;
-            // all masked
-
-            // NB! All valid moves may be masked if either your NNet architecture is
-            // insufficient or you've get overfitting or something else. If you have
-            // got dozens or hundreds of these messages you should pay attention to
-            // your NNet and/or training process.
-//      std::cout << "All valid moves were masked, do workaround." << std::endl;
-
-//          for (auto& pair: prebs) {
-                //if(i<legal_move.size()) {
-//                pair.second = 1.0f / static_cast<float>(prebs.size());
-		//std::cout<<"nomal:"<<pair.second<<std::endl;
-//          }
-//        }
+        // // renormalization
+        // if (sum > FLT_EPSILON) {
+        //     for (auto &pair: prebs) {
+        //         pair.second /= sum;
+        //     }
+        // } else {
+        //     for (auto& pair: prebs) {
+             
+        //         pair.second = 1.0f / static_cast<float>(prebs.size());
+        //     }
+        // }
 
 
         // expand
@@ -651,7 +676,7 @@ void MCTS::simulate(std::shared_ptr<GameState> game) {
 	//    std::cout<<"action:"<<item.first<<"pro:"<<item.second<<std::endl;
 	//}
 
-        node->expand(prebs, node_num);
+        node->expand(probs, node_num, game);
         //LOG(ERROR)<<"expand run end";
 
 

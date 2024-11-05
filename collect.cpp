@@ -31,9 +31,9 @@ Collect::Collect(const double& c_puct,const int& simulate_num,const int& thread_
 
 
 
-std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::symmetry(std::array<float,81*5>& state, std::vector<float>& move_prob,const int& current_player){
+std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>> Collect::symmetry(std::array<float,81*32>& state, std::vector<float>& move_prob,const int& current_player){
     //
-    std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> results;
+    std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>> results;
 
     //  遍历 state state为81*5 408
     //
@@ -50,8 +50,8 @@ std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::
 
     for(size_t code=0;code<8;++code){
         // 现在可以使用twoDArray[row][col]来访问元素了
-        for (int row = 0; row < 5; ++row) {
-            if(row!=2){
+        for (int row = 0; row < 32; ++row) {
+            //if(row!=2){
                 float temp[81]={0};
                 for (int col = 0; col < 81; ++col) {
 
@@ -65,7 +65,7 @@ std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::
                 }
 
                 //memcpy(dimArray[row],temp,sizeof(temp));
-            }
+           // }
         }
         // 修改 move_prob
 //        std::vector<std::pair<std::string,float>> transform_move_prob;
@@ -95,7 +95,7 @@ std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::
 
 
 
-std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::get_equi_data(std::vector<std::array<float,81*5>> states,  std::vector<std::vector<float>> move_probs, std::vector<int> current_players){
+std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>> Collect::get_equi_data(std::vector<std::array<float,81*32>> states,  std::vector<std::vector<float>> move_probs, std::vector<int> current_players){
     // 继续
     /*
      * state 5*81
@@ -107,7 +107,7 @@ std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::
 
     assert(states.size() == move_probs.size() == current_players.size());
 
-    std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> play_data;
+    std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>> play_data;
 
     for(auto i=0;i<states.size();++i){
         //
@@ -122,7 +122,7 @@ std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> Collect::
 
 }
 
-void Collect::write_proto_file(std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>>& play_data,const bool& show){
+void Collect::write_proto_file(std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>>& play_data,const bool& show){
 
     TripletArray triplet_array;
     // 在此处填充你的 TripletArray 实例数据
@@ -130,7 +130,7 @@ void Collect::write_proto_file(std::vector<std::tuple<std::array<float,81*5>,std
     for (auto i=0;i<play_data.size();i++) {
         Triplet triplet = Triplet();
 
-        for (auto j = 0; j < 81*5; j++) {
+        for (auto j = 0; j < 81*32; j++) {
             triplet.add_array(static_cast<int32_t>(std::get<0>(play_data[i])[j]));
         }
 	
@@ -198,7 +198,7 @@ void Collect::self_play(const bool& show) {
    // cudaSetDevice(8);
     //deep_model model(FLAGS_engine_path);
 
-    std::vector<std::array<float,81*5>> states;
+    std::vector<std::array<float,81*32>> states;
     std::vector<std::vector<float>> move_probs;
     std::vector<int> current_players;
 
@@ -207,22 +207,60 @@ void Collect::self_play(const bool& show) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0,1);
-    int count = 0;
-    for(size_t i=0;i<45;i++){
-    	if(game.board.grid[i]==0 && dis(gen) && Coordinate::Legal_coord(i) && count<=16){
-	    game.board.grid[i] = -1;
-	    count++;
+   
+    if(dis(gen)<0.5){
+	//int count_chess=0;
+   	//for(size_t i=0;i<45;i++){
+    	 //    if(game.board.grid[i]==0 && Coordinate::Legal_coord(i) && dis(gen) && count_chess<=16){
+	 //   	     game.board.grid[i] = -1;
+	  // 	     count_chess++;
+	//	}
+	 // }
+	 //
+	 //
+	int emptyCount = 37;
+    	int count_chess = 0;
+        int targetCount = rand() % 7 + 10;
+
+	std::vector<int> possibleIndices;
+	for (int i = 0; i < 45; ++i) {
+		if (game.board.grid[i] == 0 && Coordinate::Legal_coord(i)) {
+		    possibleIndices.push_back(i);
+		}
 	}
-    }
+	while (count_chess < targetCount) {
+	    int randomIndex = rand() % possibleIndices.size();
+	    int indexToModify = possibleIndices[randomIndex];
+	    game.board.grid[indexToModify] = -1;
+	    possibleIndices.erase(possibleIndices.begin() + randomIndex);
+	    count_chess++;
+	    }
+	}else{
+	    int less_chess = 8;
+	    for(size_t i=0;i<45;i++){
+	       if(game.board.grid[i]== -1 && dis(gen) && less_chess>=3){
+	             game.board.grid[i] = 0;
+	   	     less_chess--;
+	       } 
+	    }
+	}
+     if(dis(gen)<0.2){
+     	if(dis(gen)<0.5){
+	    game.board.grid[20] = 0;
+	}else{
+	    game.board.grid[24] = 0;
+	}
+     } 
+ 
     std::vector<Move> moves;
 
     //game.legal_moves(moves);
 
     auto mcts = MCTS(&model, thread_num, c_puct, simulate_num, 0.3);
 
-    float grid[81*5]={0};
+    float grid[81*32]={0};
     int winner = 0;
-    std::array<float,81*5> arr{0.0f};
+    std::array<float,81*32> arr{0.0f};
     while (true){
         if(show){
             print_board(game.board);
@@ -243,7 +281,7 @@ void Collect::self_play(const bool& show) {
         if(winner !=0){
             // 结束
             std::vector<int> winner_z(current_players.size(),0);
-            if(winner != -1){
+            //if(winner != -1){
                 for(size_t i=0;i<current_players.size();i++){
                     if(current_players[i] == winner){
                         winner_z[i] = 1.0;
@@ -251,7 +289,7 @@ void Collect::self_play(const bool& show) {
                         winner_z[i] = -1.0;
                     }
                 }
-            }
+            //}
            // mcts.update_with_move(-1);
             //
             auto play_data = get_equi_data(states,move_probs,winner_z);

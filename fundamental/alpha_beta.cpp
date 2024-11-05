@@ -6,9 +6,9 @@
 
 double Alpha_beta::evaluation_state(GameState &game_state) {
     double value =0;
-    auto score_moves = Expert_agent::select_move(game_state);
-    if(score_moves.size()) {
-        for(auto move_map:score_moves) {
+    auto scores = Expert_agent::select_move(game_state);
+    if(scores.size()) {
+        for(auto move_map:scores) {
             if(move_map.second>10) {
                 value+=move_map.second;
             }
@@ -67,17 +67,17 @@ Move Alpha_beta::select_move(GameState &game, int depth) {
     auto score_moves =  Expert_agent::select_move(game_copy);
     auto best_move = Move();
     for(auto m:score_moves) {
-        if(m.second>10) {
+        if(m.second>=0) {
             top_moves.push_back(m.first);
         }
     }
-    if(!top_moves.size()) {
-        for(auto m:score_moves) {
-            if(m.second>0) {
-                top_moves.push_back(m.first);
-            }
-        }
-    }
+    //if(!top_moves.size()) {
+    //    for(auto m:score_moves) {
+    //        if(m.second>0) {
+    //            top_moves.push_back(m.first);
+    //        }
+    //    }
+    //}
     for(auto m:top_moves) {
         auto game_copy_1 = GameState(game_copy);
         game_copy_1.apply_move(m,game_copy_1);
@@ -93,6 +93,52 @@ Move Alpha_beta::select_move(GameState &game, int depth) {
         return top_moves[0];
     }
     return best_move;
+
+}
+
+
+
+std::unordered_map<int,float> Alpha_beta::score_moves(GameState &game, int depth) {
+    auto game_copy = GameState(game);
+    std::unordered_map<int,float> score_moves;
+    bool is_max_state = game_copy.player == BLACK;
+    auto best_value = is_max_state? -9999 : 9999;
+    std::vector<Move> top_moves;
+    auto scores =  Expert_agent::select_move(game_copy);
+    auto best_move = Move();
+    for(auto m:scores) {
+        if(m.second>=0) {
+            top_moves.push_back(m.first);
+        }
+    }
+    //if(!top_moves.size()) {
+    //    for(auto m:scores) {
+   //         if(m.second>0) {
+   //             top_moves.push_back(m.first);
+   //         }
+   //     }
+  //  }
+    std::unordered_map<int,float> moves;
+    for(auto m:top_moves) {
+        auto game_copy_1 = GameState(game_copy);
+        game_copy_1.apply_move(m,game_copy_1);
+        auto value = minmax(game_copy_1,-10e5,10e5,depth-1,!is_max_state);
+
+	//std::cout<<Move::move2str(m)<<":"<<value<<std::endl;
+
+
+	moves[game.move_2_action(m)] = value;
+        //std::cout<<value<<std::endl;
+        //if((is_max_state && value>best_value) || (!is_max_state && value<best_value)) {
+        //    best_value = value;
+        //    best_move = m;
+        //}
+
+    }
+    //if(best_move.m_point==-1 && best_move.m_point_==-1) {
+    //    return top_moves[0];
+   //}
+    return moves;
 
 }
 

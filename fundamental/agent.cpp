@@ -75,6 +75,7 @@ void Bot::select_move(GameState &game, Move &move) {
         game.legal_moves(moves);
 
         auto index = get_random_index(moves.size());
+	
         move = moves[index];
     }
 }

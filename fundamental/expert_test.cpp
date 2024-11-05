@@ -4,7 +4,7 @@
 #include "expert.h"
 
 #include "utils.h"
-#include "agent.h"
+//#include "agent.h"
 
 int play(){
 
@@ -14,7 +14,10 @@ int play(){
     Move m;
     int winner = 0;
     while(true) {
-        // print_board(game.board);
+        print_board(game.board);
+	if (game.moves.size()>32){
+            std::cout<<Move::move2str(game.moves.back())<<"----------:"<<Move::move2str(game.moves[game.moves.size()-5])<<std::endl;
+	}
         game.is_gameover(winner);
         if(winner!=0) {
             if(winner == BLACK) {
@@ -29,8 +32,22 @@ int play(){
         }
 
         if(game.player == BLACK) {
-            Bot::select_move(game,m);
-            game.apply_move(m,game);
+            //Bot::select_move(game,m);
+            //game.apply_move(m,game);
+	    //
+     	    auto moves = Expert_agent::select_move(game);
+            // for(auto item:moves) {
+            //     std::cout<<Move::move2str(item.first) <<":"<<item.second<<"\t";
+            // }
+            // std::cout<<std::endl;
+
+            auto maxElement = std::max_element(moves.begin(), moves.end(),
+                                        [](const auto& a, const auto& b) {
+                                            return a.second < b.second;
+                                        });
+            // print_move(maxElement->first);
+            game.apply_move(maxElement->first,game);
+
         }else {
             auto moves = Expert_agent::select_move(game);
             // for(auto item:moves) {
@@ -60,11 +77,12 @@ int main(){
     int black =0;
     int white = 0;
     // play();
-    for(int i=0;i<500;i++) {
-        if(play()==BLACK) {
+    for(int i=0;i<1;i++) {
+	    auto result = play();
+        if(result==BLACK) {
             black+=1;
         }
-        if(play() == WHITE) {
+        if(result == WHITE) {
             white+=1;
         }
     }

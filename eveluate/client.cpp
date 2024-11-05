@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "json.hpp"
 #include "kingchess_c/fundamental/gamestate.h"
-#include "kingchess_c/net/mcts_45_expert.h"
+#include "kingchess_c/net/mcts_45.h"
 //#include "kingchess_c/fundamental/expert.h"
 #include "kingchess_c/net/deep_model_45.h"
 
@@ -42,7 +42,7 @@ void handle_client(int client_socket) {
             game.player = json_data["player"];
             game.play_out = json_data["play_out"];
             // 构建deepmodel
-            deep_model model("/home/test4/new_kingchess/net/model/autodl-resnet5/36000.engine");
+            deep_model model("/home/test4/new_kingchess/net/ldconv_model/current.engine");
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);

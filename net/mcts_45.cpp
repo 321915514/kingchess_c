@@ -285,7 +285,7 @@ std::unordered_map<int, float> softmaxMap(const std::unordered_map<int, float>& 
     std::unordered_map<int, float> resultMap;
     //int index = 0;
     for (const auto& pair : inputMap) {
-        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp>0?sumExp:1e+10;
+        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp;
      //   index++;
     }
 

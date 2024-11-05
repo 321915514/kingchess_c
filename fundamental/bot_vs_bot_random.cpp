@@ -47,7 +47,7 @@ void run(){
     GameState::new_game(5,9,game);
     while (true){
 //
-//        print_board(game.board);
+        print_board(game.board);
 //        if(game.eat_chess()>=11){
 //            std::cout<<"black win !!"<<std::endl;
 //            break;
@@ -92,7 +92,7 @@ void run(){
 int main(){
 
     auto start = std::chrono::high_resolution_clock::now();
-    for(int16_t i =0;i<100;i++){
+    for(int16_t i =0;i<1;i++){
 ////        simple();
        run();
     }

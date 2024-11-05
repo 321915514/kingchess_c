@@ -5,7 +5,7 @@
 #ifndef KINGCHESS_COLLECT_H
 #define KINGCHESS_COLLECT_H
 
-#include "kingchess_c/net/mcts_45.h"
+#include "kingchess_c/net/mcts_45_expert.h"
 #include "kingchess_c/net/deep_model_45.h"
 #include <vector>
 #include <algorithm>

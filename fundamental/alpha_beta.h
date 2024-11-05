@@ -7,7 +7,7 @@
 
 #include "gamestate.h"
 #include "expert.h"
-
+#include <unordered_map>
 
 
 class Alpha_beta{
@@ -15,6 +15,7 @@ public:
     double evaluation_state(GameState& game_state);
     double minmax(GameState& game,double alpha,double beta,int depth,bool is_max_depth);
     Move select_move(GameState& game,int depth);
+    std::unordered_map<int,float> score_moves(GameState &game, int depth); 
 };
 
 

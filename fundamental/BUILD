@@ -73,6 +73,16 @@ cc_library(name='expert',srcs='expert.cpp',
            deps = [':function',':gamestate',':board',':move',':coordinate',':utils'],
           )
 
+
+cc_binary(name='bot_vs_bot_expert',srcs='expert_test.cpp',
+           #visibility=['PUBLIC']
+           deps = [':expert'],
+          )
+
+
+
+cc_binary(name='bot_vs_bot_alpha',srcs='bot_vs_bot_alpha.cpp',deps=[':neighbor',':coordinate',':gamestate',':utils',':alpha_beta',':expert'])
+
 cc_library(name='alpha_beta',srcs='alpha_beta.cpp',deps=[':gamestate',':expert']),
 
 

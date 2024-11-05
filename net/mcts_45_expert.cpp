@@ -107,7 +107,7 @@ void TreeNode::expand(std::unordered_map<int, float> &action_priors, unsigned in
 
 		std::vector<Move> top_moves;
 
-		auto score_moves =  Expert_agent::select_move(*game);
+	     	auto score_moves =  Expert_agent::select_move(*game);
     		for(auto m:score_moves) {
         	    if(m.second>10) {
                         top_moves.push_back(m.first);
@@ -137,7 +137,7 @@ void TreeNode::expand(std::unordered_map<int, float> &action_priors, unsigned in
 
                 //LOG(ERROR)<<"node num:"<<node_num;
                 // if(node_num<300){
-                //  this->children.push_back(new TreeNode(this, action_priors[i]));
+                // this->children.push_back(new TreeNode(this, action_priors[i]));
                 //LOG(ERROR)<<"children:"<<this->children.size();
                 //   node_num++;
                 // }else{
@@ -148,7 +148,9 @@ void TreeNode::expand(std::unordered_map<int, float> &action_priors, unsigned in
                 //}else{
 		//
 		//
-		
+			
+               // this->children[pair.first] = new TreeNode(this, pair.second*0.7+score_moves[pair.first]*0.3);
+
 		// add expert score to expand
 	        for(auto move:top_moves){	
 		    auto action = game->move_2_action(move);	
@@ -306,7 +308,7 @@ std::unordered_map<int, float> softmaxMap(const std::unordered_map<int, float>& 
     std::unordered_map<int, float> resultMap;
     //int index = 0;
     for (const auto& pair : inputMap) {
-        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp>0?sumExp:1e+10;
+        resultMap[pair.first] = std::exp(pair.second - maxValue) / sumExp;
      //   index++;
     }
 

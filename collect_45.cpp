@@ -16,7 +16,7 @@ DEFINE_string(game_save_dir,"/home/test4/new_kingchess/net/dataset_cpp/","path o
 
 DEFINE_string(game_save_dir_test,"/home/test4/new_kingchess/kingchess_c/net/dataset/","path of play game file that will be training");
 
-DEFINE_string(engine_path,"/home/test4/new_kingchess/net/model/current.engine","TensorRT engine file path");
+DEFINE_string(engine_path,"/home/test4/new_kingchess/net/ldconv_model/current.engine","TensorRT engine file path");
 
 //DEFINE_string(engine_path,"/kingchess_remote/new_kingchess/net/model/current.engine","TensorRT engine file path");
 
@@ -339,7 +339,6 @@ void Collect::self_play(const bool& show) {
 	
 	//for(auto it:probs){
 	//	std::cout<<it<<",";
-	
 	//}	
 	
 //	std::cout<< "mcts end"<<std::endl;
@@ -371,7 +370,7 @@ void Collect::self_play(const bool& show) {
         for(size_t i =0;i<1125;i++){
             move_prob.push_back(probs[i]); // move2str
             if(show){
-                //LOG(ERROR)<<Move::move2str(moves[i])<<"--"<<probs[i]<<"--"<<add_n[i];
+                //LOG(ERROR)<<"--"<<probs[i];
             }
         }
 

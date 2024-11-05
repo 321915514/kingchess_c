@@ -2,7 +2,7 @@ cc_library(name='collect',srcs='collect.cpp',deps=['//kingchess_c/net:deep_model
 
 
 
-cc_library(name='collect_45',srcs='collect_45.cpp',deps=['//kingchess_c/net:deep_model_45','//kingchess_c/net:mcts_45','//kingchess_c/fundamental:train_proto','//thirdparty/glog:glog','//thirdparty/gflags:gflags'])
+cc_library(name='collect_45',srcs='collect_45.cpp',deps=['//kingchess_c/net:deep_model_45','//kingchess_c/net:mcts_45_expert','//kingchess_c/fundamental:train_proto','//thirdparty/glog:glog','//thirdparty/gflags:gflags'])
 
 
 

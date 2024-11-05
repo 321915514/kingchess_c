@@ -97,11 +97,11 @@ int combineProbabilities(const std::unordered_map<int,double>& actions) {
 
 
 
-    std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> get_equi_data(std::vector<std::array<float,81*5>> states,  std::vector<std::vector<float>> move_probs, std::vector<int> current_players);
+    std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>> get_equi_data(std::vector<std::array<float,81*32>> states,  std::vector<std::vector<float>> move_probs, std::vector<int> current_players);
 
-    std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>> symmetry(std::array<float, 81*5>& state, std::vector<float>& move_prob,const int& current_player);
+    std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>> symmetry(std::array<float, 81*32>& state, std::vector<float>& move_prob,const int& current_player);
 
-    void write_proto_file(std::vector<std::tuple<std::array<float,81*5>,std::vector<float>,int>>& play_data,const bool& show);
+    void write_proto_file(std::vector<std::tuple<std::array<float,81*32>,std::vector<float>,int>>& play_data,const bool& show);
 
 };
 
