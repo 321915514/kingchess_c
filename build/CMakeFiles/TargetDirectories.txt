@@ -1,8 +1,0 @@
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/symmetry_test.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/bot_vs_bot_random.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/encoder_test.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/bot_vs_human.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/mcts_test.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/deep_model_test.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/edit_cache.dir
-/home/dev/kingchess_remote/kingchess_c/build/CMakeFiles/rebuild_cache.dir

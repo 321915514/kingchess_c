@@ -6,9 +6,9 @@
 #include <unistd.h>
 #include "json.hpp"
 #include "kingchess_c/fundamental/gamestate.h"
-#include "kingchess_c/net/mcts_45.h"
+#include "kingchess_c/net/mcts.h"
 //#include "kingchess_c/fundamental/expert.h"
-#include "kingchess_c/net/deep_model_45.h"
+#include "kingchess_c/net/deep_model.h"
 
 
 using json = nlohmann::json;
@@ -42,11 +42,14 @@ void handle_client(int client_socket) {
             game.player = json_data["player"];
             game.play_out = json_data["play_out"];
             // 构建deepmodel
-            deep_model model("/home/test4/new_kingchess/net/ldconv_model/current.engine");
+	    //deep_model model("/home/test4/kingchess_remote/kingchess_c/model/resnet.engine");
+
+
+	    deep_model model("/home/test4/kingchess_remote/new_kingchess/net/ldconv_model/current.engine");
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
-            auto mcts = MCTS(&model, 1, 16, 500, 0.3);
+            auto mcts = MCTS(&model, 1, 16, 1200, 0.3);
             auto res = mcts.get_action_probs(&game_copy, false, 1e-3);
 	    //for(auto i:res){
 	    //	std::cout<<i<<",";
@@ -101,7 +104,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "Server listening on port 6006" << std::endl;
+    std::cout << "Server listening on port 8888" << std::endl;
 
     // 主循环，持续监听客户端连接
     while (true) {
