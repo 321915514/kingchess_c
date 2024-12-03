@@ -5,7 +5,7 @@
 cc_binary(
    name = "server",
    srcs = "client.cpp",
-        deps= ['//kingchess_c/fundamental:gamestate','//kingchess_c/net:mcts_45_expert','#pthread'],
+        deps= ['//kingchess_c/fundamental:gamestate','//kingchess_c/net:mcts_81_expert','#pthread'],
 )
 cc_binary(
    name = "server_new",

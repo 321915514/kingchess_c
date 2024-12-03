@@ -71,6 +71,16 @@ cc_library(name='mcts_45_expert',srcs='mcts_45_expert.cpp',deps=[':deep_model_45
           )
 
 
+
+cc_library(name='mcts_81_expert',srcs='mcts_81_expert.cpp',deps=[':deep_model',"#pthread",'//kingchess_c/fundamental:gamestate','//kingchess_c/fundamental:expert','//kingchess_c/fundamental:utils','//thirdparty/gflags:gflags','//thirdparty/glog:glog'],
+          # hdrs=['mcts.h','threadpool.h']
+          )
+
+
+
+
+
+
 cc_library(name='mcts_45_alpha',srcs='mcts_45_alpha.cpp',deps=[':deep_model_45',"#pthread",'//kingchess_c/fundamental:gamestate','//kingchess_c/fundamental:alpha_beta','//kingchess_c/fundamental:utils','//thirdparty/gflags:gflags','//thirdparty/glog:glog'],
           # hdrs=['mcts.h','threadpool.h']
           )

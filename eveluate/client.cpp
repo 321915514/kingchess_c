@@ -42,10 +42,10 @@ void handle_client(int client_socket) {
             game.player = json_data["player"];
             game.play_out = json_data["play_out"];
             // 构建deepmodel
-	    //deep_model model("/home/test4/kingchess_remote/kingchess_c/model/resnet.engine");
+	    //deep_model model("/home/test4/kingchess_remote/kingchess_c/model/70000.engine");
 
 
-	    deep_model model("/home/test4/kingchess_remote/new_kingchess/net/ldconv_model/current.engine");
+	    deep_model model("/home/test4/kingchess_remote/new_kingchess/net/board_9_model/current.engine");
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
