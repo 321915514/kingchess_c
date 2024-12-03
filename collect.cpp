@@ -11,14 +11,16 @@
 #include "thirdparty/glog/logging.h"
 #include "thirdparty/gflags/gflags.h"
 
-DEFINE_string(game_save_dir,"/home/test4/new_kingchess/net/dataset_cpp/","path of play game file that will be training");
+//DEFINE_string(game_save_dir,"/home/test4/new_kingchess/net/dataset_cpp/","path of play game file that will be training");
 
+
+DEFINE_string(game_save_dir,"/root/autodl-tmp/dataset_cpp/","path of play game file that will be training");
 
 DEFINE_string(game_save_dir_test,"/home/test4/new_kingchess/kingchess_c/net/dataset/","path of play game file that will be training");
 
-DEFINE_string(engine_path,"/home/test4/new_kingchess/net/model/current.engine","TensorRT engine file path");
+//DEFINE_string(engine_path,"/home/test4/new_kingchess/net/model/current.engine","TensorRT engine file path");
 
-    //std::string filename1 = "/home/test4/kingchess_remote/kingchess/net/dataset/"+file;
+DEFINE_string(engine_path,"/kingchess_remote/new_kingchess/net/model/current.engine","TensorRT engine file path");
 
 
 Collect::Collect(const double& c_puct,const int& simulate_num,const int& thread_num ):c_puct(c_puct),simulate_num(simulate_num),thread_num(thread_num){
