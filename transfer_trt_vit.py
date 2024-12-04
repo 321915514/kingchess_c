@@ -119,5 +119,5 @@ if __name__ == '__main__':
     #model_path = './model/26000.pth'
     #shutil.copy(model_path, './supervise_model/current.pth')
 
-    export_engine(model_path, './model/current.onnx', './model/34000.engine')
+    export_engine(model_path, './model/current.onnx', './model/70000.engine')
 

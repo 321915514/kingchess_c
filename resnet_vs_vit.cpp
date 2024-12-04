@@ -9,13 +9,13 @@ int run(){
     GameState game;
     int winner = 0;
     GameState::new_game(5,9,game);
-    deep_model vit("/home/test4/kingchess_remote/kingchess_c/model/34000.engine");
+    deep_model vit("/home/test4/kingchess_remote/kingchess_c/model/70000.engine");
     
     deep_model resnet("/home/test4/kingchess_remote/kingchess_c/model/resnet.engine");
-    auto mcts_resnet = MCTS(&resnet,1,16,1200,0.3);
+    auto mcts_resnet = MCTS(&resnet,1,16,500,0.3);
     auto mcts_vit = MCTS(&vit,1,16,1200,0.3);
     while (true){
-        //print_board(game.board);
+       // print_board(game.board);
 
         game.is_gameover(winner);
         if(winner == -1) {
@@ -73,7 +73,7 @@ int run(){
             //        move = pair.first;
             //    }
             //}
-            // game.apply_move(move,game);
+            //game.apply_move(move,game);
 	    // expert end
 	    
 	    // model
@@ -106,7 +106,8 @@ int run(){
 int main() {
     int black = 0;
     int white = 0;
-    for(int i=0;i<100;i++){
+    for(int i=0;i<100;i++){	
+	//std::cout<<i<<std::endl;
     	auto result = run();
 	std::cout<<i<<std::endl;
 	if(result == BLACK){

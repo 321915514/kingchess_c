@@ -6,9 +6,9 @@
 #include <unistd.h>
 #include "json.hpp"
 #include "kingchess_c/fundamental/gamestate.h"
-#include "kingchess_c/net/mcts.h"
+#include "kingchess_c/net/mcts_45_expert.h"
 //#include "kingchess_c/fundamental/expert.h"
-#include "kingchess_c/net/deep_model.h"
+#include "kingchess_c/net/deep_model_45.h"
 
 
 using json = nlohmann::json;
@@ -44,8 +44,9 @@ void handle_client(int client_socket) {
             // 构建deepmodel
 	    //deep_model model("/home/test4/kingchess_remote/kingchess_c/model/70000.engine");
 
+	    //std::cout<<"model init"<<std::endl;
 
-	    deep_model model("/home/test4/kingchess_remote/new_kingchess/net/board_9_model/current.engine");
+	    deep_model model("/home/test4/kingchess_remote/new_kingchess/net/ldconv_model/current.engine");
 
             auto game_copy = GameState(game);
             //auto mcts = MCTS_Pure(64,5,100000);
